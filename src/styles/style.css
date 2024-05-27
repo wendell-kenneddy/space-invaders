@@ -1,0 +1,54 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  font-family: "VT323", monospace;
+  font-size: 62.5%;
+  font-weight: 400;
+  font-style: normal;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  color-scheme: light dark;
+}
+
+header {
+  padding: 3rem 0 12rem;
+  background-image: url("/parabolic-pentagon.svg");
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-bottom: 1px solid #00ff00;
+}
+
+header h1 {
+  font-size: 4.8rem;
+}
+
+main {
+  width: 64rem;
+  height: 36rem;
+  margin: -4rem auto 0;
+}
+
+#canvas-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #00ff00;
+  width: 64.5rem;
+  height: 36.5rem;
+  box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1),
+    0 8px 10px -6px rgb(0 0 0 / 0.1);
+}
+
+canvas {
+  background-color: #000;
+}
