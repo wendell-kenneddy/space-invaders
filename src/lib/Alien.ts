@@ -1,17 +1,19 @@
-import { GameObject, GameObjectConfig } from "./GameObject";
+import { v4 } from "uuid";
+import { GameObject, GameObjectConfig } from "./interfaces/GameObject";
 
 export interface AlienConfig extends GameObjectConfig {
   pointsWorth: number;
 }
 
-export class Alien extends GameObject {
-  constructor(config: GameObjectConfig, private readonly pointsWorth: number) {
-    super(config);
-  }
+export class Alien implements GameObject {
+  readonly id = v4();
+  readonly canBeDestroyed: boolean = true;
 
-  update(): void {}
+  constructor(private readonly config: GameObjectConfig, private readonly pointsWorth: number) {}
 
   getData(): AlienConfig {
     return { ...this.config, pointsWorth: this.pointsWorth };
   }
+
+  update(): void {}
 }
