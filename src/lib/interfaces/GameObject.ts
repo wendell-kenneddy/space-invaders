@@ -1,11 +1,9 @@
-import { v4 } from "uuid";
-
 export interface SpriteData {
   spritesheetSrc: CanvasImageSource;
   cropPositionX: number;
   cropPositionY: number;
-  scaledWidth: number;
-  scaledHeight: number;
+  cropWidth: number;
+  cropHeight: number;
 }
 
 export interface GameObjectConfig {
@@ -19,9 +17,8 @@ export interface GameObjectConfig {
 }
 
 export abstract class GameObject {
-  readonly id = v4();
-
-  constructor(protected readonly config: GameObjectConfig) {}
+  abstract readonly id: string;
+  abstract readonly canBeDestroyed: boolean;
 
   abstract getData(): GameObjectConfig;
   abstract update(): void;
