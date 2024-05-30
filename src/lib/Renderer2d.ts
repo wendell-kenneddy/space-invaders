@@ -12,21 +12,55 @@ type RenderableSpriteData = Omit<
 > &
   SpriteData;
 
-export class Renderer2d extends Renderer {
-  constructor(private readonly canvasContext2d: CanvasRenderingContext2D) {
-    super();
-  }
+export class Renderer2d implements Renderer {
+  private currentSpriteIndex: number = 0;
+  private frameCount: number = 0;
+
+  constructor(
+    private readonly canvasContext2d: CanvasRenderingContext2D,
+    private readonly spritesPerAnimation: number,
+    private readonly animationFrameInterval: number
+  ) {}
 
   render(gameObject: GameObject) {
-    const { width, height, positionX, positionY, spriteDataOrColor } = gameObject.getData();
-    const base = { width, height, positionX, positionY };
+    const { width, height, positionX, positionY, spriteDataOrColor, canBeDestroyed, id } =
+      gameObject.getData();
+    const base = { width, height, positionX, positionY, canBeDestroyed, id };
 
-    if (typeof spriteDataOrColor != "string") {
-      this.renderSprite({ ...base, ...spriteDataOrColor });
+    this.changeFrameData();
+
+    if (spriteDataOrColor instanceof Array) {
+      const spriteData =
+        spriteDataOrColor.length > 1
+          ? spriteDataOrColor[this.currentSpriteIndex]
+          : spriteDataOrColor[0];
+
+      this.renderSprite({ ...base, ...spriteData });
       return;
     }
 
-    this.renderRect({ ...base, color: spriteDataOrColor });
+    this.renderRect({ ...base, color: spriteDataOrColor as string });
+  }
+
+  clearScreen() {
+    const width = this.canvasContext2d.canvas.width;
+    const height = this.canvasContext2d.canvas.height;
+    this.canvasContext2d.clearRect(0, 0, width, height);
+  }
+
+  private changeFrameData() {
+    if (this.frameCount >= this.animationFrameInterval) {
+      if (this.currentSpriteIndex == this.spritesPerAnimation - 1) {
+        this.currentSpriteIndex = 0;
+      } else {
+        this.currentSpriteIndex++;
+      }
+
+      this.frameCount = 0;
+      return;
+    }
+
+    this.frameCount++;
   }
 
   private renderRect({ width, height, positionX, positionY, color }: RenderableRectData): void {
