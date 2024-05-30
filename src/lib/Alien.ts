@@ -6,13 +6,21 @@ export interface AlienConfig extends GameObjectConfig {
 }
 
 export class Alien implements GameObject {
-  readonly id = v4();
-  readonly canBeDestroyed: boolean = true;
+  private readonly id = v4();
+  private readonly canBeDestroyed = true;
 
-  constructor(private readonly config: GameObjectConfig, private readonly pointsWorth: number) {}
+  constructor(
+    private readonly config: Omit<GameObjectConfig, "id" | "canBeDestroyed">,
+    private readonly pointsWorth: number
+  ) {}
 
   getData(): AlienConfig {
-    return { ...this.config, pointsWorth: this.pointsWorth };
+    return {
+      id: this.id,
+      canBeDestroyed: this.canBeDestroyed,
+      pointsWorth: this.pointsWorth,
+      ...this.config,
+    };
   }
 
   update(): void {}
