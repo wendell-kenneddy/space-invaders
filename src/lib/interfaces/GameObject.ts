@@ -7,19 +7,18 @@ export interface SpriteData {
 }
 
 export interface GameObjectConfig {
+  canBeDestroyed: boolean;
+  id: string;
   positionX: number;
   positionY: number;
   velocityX: number;
   velocityY: number;
   width: number;
   height: number;
-  spriteDataOrColor: string | SpriteData;
+  spriteDataOrColor: string | SpriteData[];
 }
 
 export abstract class GameObject {
-  abstract readonly id: string;
-  abstract readonly canBeDestroyed: boolean;
-
   abstract getData(): GameObjectConfig;
   abstract update(): void;
 }
