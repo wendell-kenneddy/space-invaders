@@ -33,8 +33,10 @@ header h1 {
 }
 
 main {
-  width: 64rem;
-  height: 36rem;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   margin: -4rem auto 0;
 }
 
@@ -43,10 +45,9 @@ main {
   align-items: center;
   justify-content: center;
   background: #00ff00;
-  width: 64.5rem;
-  height: 36.5rem;
-  box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1),
-    0 8px 10px -6px rgb(0 0 0 / 0.1);
+  width: 46.5rem;
+  height: 42.5rem;
+  box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
 }
 
 canvas {
