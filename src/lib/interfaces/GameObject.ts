@@ -1,3 +1,5 @@
+import { EngineState } from "./Engine";
+
 export interface SpriteData {
   spritesheetSrc: CanvasImageSource;
   cropPositionX: number;
@@ -20,5 +22,5 @@ export interface GameObjectConfig {
 
 export abstract class GameObject {
   abstract getData(): GameObjectConfig;
-  abstract update(): void;
+  abstract update(engineState: EngineState): void;
 }
