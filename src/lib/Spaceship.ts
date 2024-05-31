@@ -1,5 +1,6 @@
 import { v4 } from "uuid";
 import { GameObject, GameObjectConfig } from "./interfaces/GameObject";
+import { EngineState } from "./interfaces/Engine";
 
 export interface SpaceshipConfig extends GameObjectConfig {}
 
@@ -17,9 +18,20 @@ export class Spaceship implements GameObject {
     };
   }
 
-  fire() {
+  fire(): void {
     console.log("Fire!");
   }
 
-  update(): void {}
+  update({ collisionSystem, inputSystemState }: EngineState): void {
+    const inputData = inputSystemState.inputData;
+    const horizontalBoundsCollision = collisionSystem.checkIfIsOutOfBounds(this, "horizontal");
+
+    if (inputData["ArrowLeft"] && horizontalBoundsCollision != "left") {
+      this.config.positionX -= this.config.velocityX;
+    }
+
+    if (inputData["ArrowRight"] && horizontalBoundsCollision != "right") {
+      this.config.positionX += this.config.velocityX;
+    }
+  }
 }
