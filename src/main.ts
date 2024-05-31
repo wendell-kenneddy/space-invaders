@@ -1,5 +1,8 @@
 import { Alien } from "./lib/Alien";
+import { AlienMovementScript } from "./lib/AlienMovementScript";
+import { CollisionSystem2d } from "./lib/CollisionSystem2d";
 import { Engine2d } from "./lib/Engine2d";
+import { KeyboardInputSystem } from "./lib/KeyboardInputSystem";
 import { Renderer2d } from "./lib/Renderer2d";
 import { Spaceship } from "./lib/Spaceship";
 
@@ -9,14 +12,22 @@ const canvas = document.getElementById("game-screen") as HTMLCanvasElement;
 const canvasContext2d = canvas.getContext("2d") as CanvasRenderingContext2D;
 const spritesheet = new Image(111, 128);
 const renderer2d = new Renderer2d(canvasContext2d, 2, 1250);
-const engine2d = new Engine2d(renderer2d);
+const collisionSystem2d = new CollisionSystem2d({
+  screenStartX: 0,
+  screenStartY: 0,
+  screenEndX: canvas.width,
+  screenEndY: canvas.height,
+});
+const keyboardInputSystem = new KeyboardInputSystem();
+const alienMovementScript = new AlienMovementScript(true);
+const engine2d = new Engine2d(renderer2d, collisionSystem2d, keyboardInputSystem);
 const spaceship = new Spaceship({
   width: 24,
   height: 24,
   positionX: 218,
   positionY: 380,
-  velocityX: 2,
-  velocityY: 2,
+  velocityX: 2.5,
+  velocityY: 0,
   spriteDataOrColor: [
     {
       spritesheetSrc: spritesheet,
@@ -50,8 +61,8 @@ function createAliensGrid() {
             height: finalSize,
             positionX: startX + j * (finalSize + spriteSpacing),
             positionY: 20 + i * (finalSize + spriteSpacing),
-            velocityX: 0,
-            velocityY: 0,
+            velocityX: 0.5,
+            velocityY: 5,
             spriteDataOrColor: [
               {
                 spritesheetSrc: spritesheet,
@@ -83,6 +94,6 @@ spritesheet.addEventListener("load", () => {
 
   engine2d.addOneGameObject(spaceship);
   engine2d.addManyGameObjects(aliens);
-  // engine2d.addOneGameObject(spaceship);
+  engine2d.addLogicScript(alienMovementScript);
   engine2d.startGameLoop();
 });
