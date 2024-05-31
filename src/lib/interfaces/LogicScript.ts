@@ -1,8 +1,12 @@
 import { EngineState } from "./Engine";
 
-export abstract class LogicScript {
-  abstract readonly id: string;
-  abstract readonly canBeDestroyed: boolean;
+export interface LogicScriptData {
+  id: string;
+  canBeDestroyed: boolean;
+  hasBeenExecuted: boolean;
+}
 
+export abstract class LogicScript {
   abstract execute(engineState: EngineState): void;
+  abstract getScriptData(): LogicScriptData;
 }
