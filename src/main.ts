@@ -3,6 +3,8 @@ import { AlienMovementScript } from "./lib/AlienMovementScript";
 import { CollisionSystem2d } from "./lib/CollisionSystem2d";
 import { Engine2d } from "./lib/Engine2d";
 import { KeyboardInputSystem } from "./lib/KeyboardInputSystem";
+import { Projectile } from "./lib/Projectile";
+import { ProjectileFiringScript } from "./lib/ProjectileFiringScript";
 import { Renderer2d } from "./lib/Renderer2d";
 import { Spaceship } from "./lib/Spaceship";
 
@@ -38,6 +40,7 @@ const spaceship = new Spaceship({
     },
   ],
 });
+const projectileFiringScript = new ProjectileFiringScript(true, spaceship.getData().id);
 
 spritesheet.src = "/spritesheet-end.png";
 
@@ -94,6 +97,12 @@ spritesheet.addEventListener("load", () => {
 
   engine2d.addOneGameObject(spaceship);
   engine2d.addManyGameObjects(aliens);
+  engine2d.addLogicScript(projectileFiringScript);
   engine2d.addLogicScript(alienMovementScript);
   engine2d.startGameLoop();
+  setInterval(() => {
+    const objects = Object.values(engine2d.getEngineState().gameObjects);
+    const projectiles = objects.filter((o) => o instanceof Projectile);
+    console.log(projectiles);
+  }, 4000);
 });
