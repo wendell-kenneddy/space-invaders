@@ -11,7 +11,7 @@ export interface EngineState {
   gameState: GameState;
   collisionSystem: CollisionSystem;
   inputSystemState: InputSystemState;
-  requestStoresEdit: (key: string, newValue: any) => void;
+  requestStoresEdit: (key: string, newValue: any, toDelete: boolean) => void;
   requestGameStop: () => void;
   requestGameObjectAdd: (gameObject: GameObject) => void;
   requestGameObjectDestruction: (id: string) => void;
