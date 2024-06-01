@@ -24,9 +24,10 @@ export class Engine2d implements Engine {
       gameObjects: { ...this.gameObjects },
       collisionSystem: this.collisionSystem,
       inputSystemState: this.inputSystem.getInputSystemState(),
-      requestStoresEdit: (k: string, v: any) => this.requestStoresEdit(k, v),
+      requestStoresEdit: (key: string, newValue: any, toDelete: boolean) =>
+        this.requestStoresEdit(key, newValue, toDelete),
       requestGameStop: () => this.triggerGameStop(),
-      requestGameObjectAdd: (o: GameObject) => this.addOneGameObject(o),
+      requestGameObjectAdd: (gameObject: GameObject) => this.addOneGameObject(gameObject),
       requestGameObjectDestruction: (id: string) => this.destroyGameObject(id),
     } as const;
     return engineState;
@@ -77,7 +78,12 @@ export class Engine2d implements Engine {
     this.gameState = "triggered-to-stop";
   }
 
-  private requestStoresEdit(key: string, newValue: any) {
+  private requestStoresEdit(key: string, newValue: any, toDelete: boolean) {
+    if (toDelete) {
+      delete this.stores[key];
+      return;
+    }
+
     this.stores[key] = newValue;
   }
 
