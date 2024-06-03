@@ -14,12 +14,12 @@ type RenderableSpriteData = Omit<
 
 export class Renderer2d implements Renderer {
   private currentSpriteIndex: number = 0;
-  private frameCount: number = 0;
+  private lastSpriteChange: number | null = null;
 
   constructor(
     private readonly canvasContext2d: CanvasRenderingContext2D,
     private readonly spritesPerAnimation: number,
-    private readonly animationFrameInterval: number
+    private readonly animationInterval: number
   ) {}
 
   render(gameObject: GameObject) {
@@ -49,18 +49,31 @@ export class Renderer2d implements Renderer {
   }
 
   private changeFrameData() {
-    if (this.frameCount >= this.animationFrameInterval) {
+    const now = performance.now();
+
+    if (!this.lastSpriteChange) {
       if (this.currentSpriteIndex == this.spritesPerAnimation - 1) {
         this.currentSpriteIndex = 0;
       } else {
         this.currentSpriteIndex++;
       }
 
-      this.frameCount = 0;
+      this.lastSpriteChange = now;
       return;
     }
 
-    this.frameCount++;
+    const delta = now - this.lastSpriteChange;
+
+    if (delta >= this.animationInterval) {
+      if (this.currentSpriteIndex == this.spritesPerAnimation - 1) {
+        this.currentSpriteIndex = 0;
+      } else {
+        this.currentSpriteIndex++;
+      }
+
+      this.lastSpriteChange = now;
+      return;
+    }
   }
 
   private renderRect({ width, height, positionX, positionY, color }: RenderableRectData): void {
