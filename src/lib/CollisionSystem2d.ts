@@ -7,23 +7,15 @@ export class CollisionSystem2d implements CollisionSystem {
   checkOneAgainstOne(collider1: GameObject, collider2: GameObject, axis: CollisionAxis) {
     const collider1Data = collider1.getData();
     const collider2Data = collider2.getData();
-    let collisionDetected: boolean = false;
 
-    switch (axis) {
-      case "horizontal":
-        collisionDetected = this.checkOneToOneHorizontalCollision(collider1Data, collider2Data);
-        break;
-      case "vertical":
-        collisionDetected = this.checkOneToOneVerticalCollision(collider1Data, collider2Data);
-        break;
-      default:
-        collisionDetected =
-          this.checkOneToOneHorizontalCollision(collider1Data, collider2Data) &&
-          this.checkOneToOneVerticalCollision(collider1Data, collider2Data);
-        break;
-    }
-
-    return collisionDetected;
+    if (axis == "horizontal")
+      return this.checkOneToOneHorizontalCollision(collider1Data, collider2Data);
+    if (axis == "vertical")
+      return this.checkOneToOneVerticalCollision(collider1Data, collider2Data);
+    return (
+      this.checkOneToOneHorizontalCollision(collider1Data, collider2Data) &&
+      this.checkOneToOneVerticalCollision(collider1Data, collider2Data)
+    );
   }
 
   checkIfIsOutOfBounds(gameObject: GameObject, axis: CollisionAxis) {
@@ -42,10 +34,13 @@ export class CollisionSystem2d implements CollisionSystem {
     collider2Data: GameObjectConfig
   ) {
     if (
-      collider1Data.positionX + collider1Data.width >= collider2Data.positionX &&
-      collider1Data.positionX + collider1Data.width <= collider2Data.positionX + collider2Data.width
-    )
+      (collider1Data.positionX <= collider2Data.positionX &&
+        collider1Data.positionX + collider1Data.width > collider2Data.positionX) ||
+      (collider1Data.positionX >= collider2Data.positionX &&
+        collider1Data.positionX <= collider2Data.positionX + collider2Data.width)
+    ) {
       return true;
+    }
     return false;
   }
 
@@ -54,10 +49,13 @@ export class CollisionSystem2d implements CollisionSystem {
     collider2Data: GameObjectConfig
   ) {
     if (
-      collider1Data.positionY <= collider2Data.positionY + collider2Data.height ||
-      collider1Data.positionY + collider1Data.height >= collider2Data.positionY
-    )
+      (collider1Data.positionY <= collider2Data.positionY &&
+        collider1Data.positionY + collider1Data.height > collider2Data.positionY) ||
+      (collider1Data.positionY >= collider2Data.positionY &&
+        collider1Data.positionY < collider2Data.positionY + collider2Data.height)
+    ) {
       return true;
+    }
     return false;
   }
 }
