@@ -31,9 +31,16 @@ export class Alien implements GameObject {
     };
   }
 
-  update(engineState: EngineState): void {
-    const stores = engineState.stores;
-    const velocityMultiplier = stores["velocity-multiplier"] ?? 1;
+  update({ stores }: EngineState): void {
+    const completionPercentage: number = stores["completion-percentage"] ?? 0;
+    let velocityMultiplier: number = 1;
+
+    if (completionPercentage > 0) {
+      // since the game ends when completionPercentage reaches 100% (55/55 aliens dead), 1/55
+      // is added to ensure velocity is at max when only 1 alien
+      velocityMultiplier += 1 * (completionPercentage + 1 / 55);
+    }
+
     const motion = stores["motion"] ?? this.currentMotion;
     if (motion != this.currentMotion) {
       this.currentMotion = -this.currentMotion as AlienMotion;
@@ -41,6 +48,6 @@ export class Alien implements GameObject {
       this.config.positionY += this.config.velocityY;
     }
 
-    this.config.positionX += this.config.velocityX * velocityMultiplier;
+    this.config.positionX += Math.min(this.config.velocityX * velocityMultiplier);
   }
 }
