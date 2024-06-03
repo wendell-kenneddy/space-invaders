@@ -8,7 +8,8 @@ export class ProjectileFiringScript implements LogicScript {
   private readonly id = v4();
   private hasBeenExecuted: boolean = false;
   private lastShotTimestamp: number | null = null;
-  private readonly fireIntervalInMilliseconds: number = 650;
+  // don't set this too low otherwise some weird shit might happen, keep it >300
+  private readonly fireIntervalInMilliseconds: number = 500;
   private currentEngineState: EngineState | null = null;
 
   constructor(private readonly canBeDestroyed: boolean, private readonly spaceshipId: string) {}
@@ -24,7 +25,6 @@ export class ProjectileFiringScript implements LogicScript {
       }
 
       const delta = performance.now() - this.lastShotTimestamp;
-
       delta >= this.fireIntervalInMilliseconds && this.fireProjectile();
     }
   }
@@ -40,19 +40,12 @@ export class ProjectileFiringScript implements LogicScript {
   private fireProjectile(): void {
     const { requestGameObjectAdd, requestStoresEdit, stores } = this
       .currentEngineState as EngineState;
+    const projectileIds: string[] = stores["ally-projectile-ids"] ?? [];
     const projectile = this.createNewProjectile();
+
     requestGameObjectAdd(projectile);
     this.lastShotTimestamp = performance.now();
-
-    if (!stores["projectile-ids"]) {
-      requestStoresEdit("projectile-ids", [projectile.getData().id], false);
-      return;
-    }
-    requestStoresEdit(
-      "projectile-ids",
-      [...stores["projectile-ids"], projectile.getData().id],
-      false
-    );
+    requestStoresEdit("ally-projectile-ids", [...projectileIds, projectile.getData().id], false);
   }
 
   private createNewProjectile(): Projectile {
@@ -69,11 +62,12 @@ export class ProjectileFiringScript implements LogicScript {
         height,
         spriteDataOrColor: "#fff",
         velocityX: 0,
-        velocityY: 5,
+        velocityY: -5,
         positionY,
         positionX,
       },
-      true
+      true,
+      "ally"
     );
     return projectile;
   }
