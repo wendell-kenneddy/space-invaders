@@ -58,8 +58,7 @@ export class Engine2d implements Engine {
   }
 
   destroyGameObject(id: string): void {
-    const gameObject = this.gameObjects[id];
-    const { canBeDestroyed } = gameObject.getData();
+    const { canBeDestroyed } = this.gameObjects[id].getData();
     if (!canBeDestroyed) throw new Error(`Game Object ${id} can't be destroyed.`);
     delete this.gameObjects[id];
   }
@@ -69,13 +68,9 @@ export class Engine2d implements Engine {
   }
 
   requestLogicScriptDestruction(id: string) {
-    const script = this.logicScripts[id];
-    if (!script.getScriptData().canBeDestroyed)
-      throw new Error(`Logic Script ${id} can't be destroyed.`);
-  }
-
-  private triggerGameStop() {
-    this.gameState = "triggered-to-stop";
+    const { canBeDestroyed } = this.logicScripts[id].getScriptData();
+    if (!canBeDestroyed) throw new Error(`Logic Script ${id} can't be destroyed.`);
+    delete this.logicScripts[id];
   }
 
   private requestStoresEdit(key: string, newValue: any, toDelete: boolean) {
@@ -88,8 +83,8 @@ export class Engine2d implements Engine {
   }
 
   private executeLogicScripts() {
-    for (const [, script] of Object.entries(this.logicScripts)) {
-      script.execute(this.getEngineState());
+    for (const id in this.logicScripts) {
+      this.logicScripts[id].execute(this.getEngineState());
     }
   }
 
@@ -98,6 +93,10 @@ export class Engine2d implements Engine {
       object.update(this.getEngineState());
       this.renderer.render(object);
     }
+  }
+
+  private triggerGameStop() {
+    this.gameState = "triggered-to-stop";
   }
 
   private runGameLoop() {
