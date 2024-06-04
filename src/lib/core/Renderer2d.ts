@@ -1,5 +1,7 @@
 import { GameObject, GameObjectConfig, SpriteData } from "@interfaces/GameObject";
 import { Renderer } from "@interfaces/Renderer";
+import { TextObjectConfig } from "@interfaces/TextObject";
+import { RenderableObject } from "./Engine2d";
 
 type RenderableRectData = Omit<
   GameObjectConfig,
@@ -22,7 +24,21 @@ export class Renderer2d implements Renderer {
     private readonly animationInterval: number
   ) {}
 
-  render(gameObject: GameObject) {
+  render(renderableObject: RenderableObject) {
+    if ((renderableObject as GameObject).getData().spriteDataOrColor) {
+      this.renderGameObject(renderableObject as GameObject);
+      return;
+    }
+    this.renderText(renderableObject.getData() as TextObjectConfig);
+  }
+
+  clearScreen() {
+    const width = this.canvasContext2d.canvas.width;
+    const height = this.canvasContext2d.canvas.height;
+    this.canvasContext2d.clearRect(0, 0, width, height);
+  }
+
+  private renderGameObject(gameObject: GameObject) {
     const { width, height, positionX, positionY, spriteDataOrColor, canBeDestroyed, id } =
       gameObject.getData();
     const base = { width, height, positionX, positionY, canBeDestroyed, id };
@@ -42,38 +58,10 @@ export class Renderer2d implements Renderer {
     this.renderRect({ ...base, color: spriteDataOrColor as string });
   }
 
-  clearScreen() {
-    const width = this.canvasContext2d.canvas.width;
-    const height = this.canvasContext2d.canvas.height;
-    this.canvasContext2d.clearRect(0, 0, width, height);
-  }
-
-  private changeFrameData() {
-    const now = performance.now();
-
-    if (!this.lastSpriteChange) {
-      if (this.currentSpriteIndex == this.spritesPerAnimation - 1) {
-        this.currentSpriteIndex = 0;
-      } else {
-        this.currentSpriteIndex++;
-      }
-
-      this.lastSpriteChange = now;
-      return;
-    }
-
-    const delta = now - this.lastSpriteChange;
-
-    if (delta >= this.animationInterval) {
-      if (this.currentSpriteIndex == this.spritesPerAnimation - 1) {
-        this.currentSpriteIndex = 0;
-      } else {
-        this.currentSpriteIndex++;
-      }
-
-      this.lastSpriteChange = now;
-      return;
-    }
+  private renderText({ content, font, color, positionX, positionY, maxWidth }: TextObjectConfig) {
+    this.canvasContext2d.font = font;
+    this.canvasContext2d.fillStyle = color;
+    this.canvasContext2d.fillText(content, positionX, positionY, maxWidth);
   }
 
   private renderRect({ width, height, positionX, positionY, color }: RenderableRectData): void {
@@ -103,5 +91,33 @@ export class Renderer2d implements Renderer {
       width,
       height
     );
+  }
+
+  private changeFrameData() {
+    const now = performance.now();
+
+    if (!this.lastSpriteChange) {
+      if (this.currentSpriteIndex == this.spritesPerAnimation - 1) {
+        this.currentSpriteIndex = 0;
+      } else {
+        this.currentSpriteIndex++;
+      }
+
+      this.lastSpriteChange = now;
+      return;
+    }
+
+    const delta = now - this.lastSpriteChange;
+
+    if (delta >= this.animationInterval) {
+      if (this.currentSpriteIndex == this.spritesPerAnimation - 1) {
+        this.currentSpriteIndex = 0;
+      } else {
+        this.currentSpriteIndex++;
+      }
+
+      this.lastSpriteChange = now;
+      return;
+    }
   }
 }
