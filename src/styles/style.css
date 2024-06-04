@@ -37,7 +37,7 @@ main {
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: -4rem auto 0;
+  margin: -8rem auto 0;
 }
 
 #canvas-wrapper {
@@ -46,7 +46,7 @@ main {
   justify-content: center;
   background: #00ff00;
   width: 46.5rem;
-  height: 42.5rem;
+  height: 46.5rem;
   box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
 }
 
