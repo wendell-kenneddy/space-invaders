@@ -21,9 +21,9 @@ export class AlienBehaviorScript implements LogicScript {
     !this.hasBeenExecuted && (this.hasBeenExecuted = true);
     this.currentEngineState = engineState;
 
-    const { gameObjects } = engineState;
+    const { renderableObjects } = engineState;
 
-    for (const gameObject of Object.values(gameObjects)) {
+    for (const gameObject of Object.values(renderableObjects)) {
       if (!(gameObject instanceof Alien)) continue;
       const shouldFire = this.checkFiringChance();
       const now = performance.now();
@@ -57,9 +57,9 @@ export class AlienBehaviorScript implements LogicScript {
 
   private fireProjectile(alienId: string): void {
     if (!this.currentEngineState) return;
-    const { requestGameObjectAdd, requestStoresEdit, stores, gameObjects } =
+    const { requestRenderableObjectAdd, requestStoresEdit, stores, renderableObjects } =
       this.currentEngineState;
-    const alienData = gameObjects[alienId].getData();
+    const alienData = renderableObjects[alienId].getData();
     const projectileIds: string[] = stores["enemy-projectile-ids"] ?? [];
     const width = 4;
     const height = 4;
@@ -76,8 +76,8 @@ export class AlienBehaviorScript implements LogicScript {
       true,
       "enemy"
     );
-    requestGameObjectAdd(projectile);
 
+    requestRenderableObjectAdd(projectile);
     requestStoresEdit("enemy-projectile-ids", [...projectileIds, projectile.getData().id], false);
   }
 
@@ -96,12 +96,13 @@ export class AlienBehaviorScript implements LogicScript {
 
   private checkCollisionWithProjectile(currentAlien: Alien) {
     if (!this.currentEngineState) return;
-    const { gameObjects, collisionSystem, stores } = this.currentEngineState;
+    const { renderableObjects, collisionSystem, stores } = this.currentEngineState;
     this.projectileIds = stores["ally-projectile-ids"] ?? [];
     if (!this.projectileIds.length) return;
 
     for (let i = 0; i < this.projectileIds.length; i++) {
-      const projectile = gameObjects[this.projectileIds[i]] as Projectile;
+      const projectile = renderableObjects[this.projectileIds[i]] as Projectile;
+      if (!projectile) continue;
       const isBeingHit = collisionSystem.checkOneAgainstOne(projectile, currentAlien, "both");
 
       if (isBeingHit) this.handleProjectileCollision(currentAlien, projectile);
@@ -110,14 +111,17 @@ export class AlienBehaviorScript implements LogicScript {
 
   private handleProjectileCollision(alien: Alien, projectile: Projectile) {
     if (!this.currentEngineState) return;
-    const { requestGameObjectDestruction, requestStoresEdit, stores } = this.currentEngineState;
+    const { requestRenderableObjectDestruction, requestStoresEdit, stores } =
+      this.currentEngineState;
     const projectileId = projectile.getData().id;
     const filteredProjectileIds = this.projectileIds.filter((id) => id != projectileId);
     const currentCompletionPercentage = stores["completion-percentage"] ?? 0;
+    const currentScore = stores["score"] ?? 0;
     requestStoresEdit("ally-projectile-ids", filteredProjectileIds, false);
     requestStoresEdit("completion-percentage", currentCompletionPercentage + 1 / 55, false);
-    requestGameObjectDestruction(projectileId);
-    requestGameObjectDestruction(alien.getData().id);
+    requestStoresEdit("score", currentScore + alien.getData().pointsWorth, false);
+    requestRenderableObjectDestruction(projectileId);
+    requestRenderableObjectDestruction(alien.getData().id);
   }
 
   private handleMotion(currentAlien: Alien) {
