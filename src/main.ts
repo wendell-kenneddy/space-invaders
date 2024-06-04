@@ -5,9 +5,10 @@ import { KeyboardInputSystem } from "@core/KeyboardInputSystem";
 import { Alien } from "@game-objects/Alien";
 import { Spaceship } from "@game-objects/Spaceship";
 import { AlienBehaviorScript } from "@scripts/AlienBehaviorScript";
-import { ProjectileFiringScript } from "@scripts/ProjectileFiringScript";
+import { SpaceshipBehaviorScript } from "@scripts/SpaceshipBehaviorScript";
 
 import "./styles/style.css";
+import { DynamicDisplay } from "./lib/text-objects/DynamicDisplay";
 
 const spritesheet = new Image(111, 128);
 spritesheet.src = "/spritesheet-end.png";
@@ -17,29 +18,12 @@ const canvasContext2d = canvas.getContext("2d") as CanvasRenderingContext2D;
 const renderer2d = new Renderer2d(canvasContext2d, 2, 750);
 const collisionSystem2d = new CollisionSystem2d({
   screenStartX: 0,
-  screenStartY: 0,
+  screenStartY: 60,
   screenEndX: canvas.width,
   screenEndY: canvas.height,
 });
 const keyboardInputSystem = new KeyboardInputSystem();
 const engine2d = new Engine2d(renderer2d, collisionSystem2d, keyboardInputSystem);
-const spaceship = new Spaceship({
-  width: 24,
-  height: 24,
-  positionX: canvas.width / 2 - 12,
-  positionY: canvas.height - 36,
-  velocityX: 2.5,
-  velocityY: 0,
-  spriteDataOrColor: [
-    {
-      spritesheetSrc: spritesheet,
-      cropPositionX: 20,
-      cropPositionY: 540,
-      cropWidth: 120,
-      cropHeight: 80,
-    },
-  ],
-});
 
 function createAliensGrid() {
   const aliensPerRow = 12;
@@ -61,7 +45,7 @@ function createAliensGrid() {
             width: finalSize,
             height: finalSize,
             positionX: startX + j * (finalSize + spriteSpacing),
-            positionY: 20 + i * (finalSize + spriteSpacing),
+            positionY: 60 + i * (finalSize + spriteSpacing),
             velocityX: 0.5,
             velocityY: 7,
             spriteDataOrColor: [
@@ -92,12 +76,51 @@ function createAliensGrid() {
 
 spritesheet.addEventListener("load", () => {
   const aliens = createAliensGrid();
+  const spaceship = new Spaceship({
+    width: 24,
+    height: 24,
+    positionX: canvas.width / 2 - 12,
+    positionY: canvas.height - 36,
+    velocityX: 2.5,
+    velocityY: 0,
+    spriteDataOrColor: [
+      {
+        spritesheetSrc: spritesheet,
+        cropPositionX: 20,
+        cropPositionY: 540,
+        cropWidth: 120,
+        cropHeight: 80,
+      },
+    ],
+  });
+  const scoreDisplay = new DynamicDisplay(true, {
+    content: "Score: 0",
+    color: "#fff",
+    font: "24px monospace",
+    maxWidth: 120,
+    positionX: 20,
+    positionY: 40,
+    key: "score",
+    defaultValue: 0,
+  });
+  const hpDisplay = new DynamicDisplay(true, {
+    content: "hp: 3",
+    color: "#fff",
+    font: "24px monospace",
+    maxWidth: 180,
+    positionX: 180,
+    positionY: 40,
+    key: "spaceship-hp",
+    defaultValue: 3,
+  });
   const alienBehaviorScript = new AlienBehaviorScript(true);
-  const projectileFiringScript = new ProjectileFiringScript(true, spaceship.getData().id);
+  const spaceshipBehaviorScript = new SpaceshipBehaviorScript(true, spaceship.getData().id, 500);
 
-  engine2d.addOneGameObject(spaceship);
-  engine2d.addManyGameObjects(aliens);
+  engine2d.addOneRenderableObject(scoreDisplay);
+  engine2d.addOneRenderableObject(hpDisplay);
+  engine2d.addOneRenderableObject(spaceship);
+  engine2d.addManyRenderableObjects(aliens);
+  engine2d.addLogicScript(spaceshipBehaviorScript);
   engine2d.addLogicScript(alienBehaviorScript);
-  engine2d.addLogicScript(projectileFiringScript);
   engine2d.startGameLoop();
 });
