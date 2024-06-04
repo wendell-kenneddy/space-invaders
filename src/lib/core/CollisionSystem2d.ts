@@ -1,5 +1,5 @@
-import { CollisionAxis, CollisionSystem, ScreenBoundaries } from "./interfaces/CollisionSystem";
-import { GameObject, GameObjectConfig } from "./interfaces/GameObject";
+import { CollisionAxis, CollisionSystem, ScreenBoundaries } from "../interfaces/CollisionSystem";
+import { GameObject, GameObjectConfig } from "../interfaces/GameObject";
 
 export class CollisionSystem2d implements CollisionSystem {
   constructor(private readonly boundaries: ScreenBoundaries) {}

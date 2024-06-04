@@ -1,9 +1,9 @@
-import { CollisionSystem } from "./interfaces/CollisionSystem";
-import { Engine, GameState } from "./interfaces/Engine";
-import { GameObject } from "./interfaces/GameObject";
-import { InputSystem } from "./interfaces/InputSystem";
-import { LogicScript } from "./interfaces/LogicScript";
-import { Renderer } from "./interfaces/Renderer";
+import { CollisionSystem } from "../interfaces/CollisionSystem";
+import { Engine, GameState } from "../interfaces/Engine";
+import { GameObject } from "../interfaces/GameObject";
+import { InputSystem } from "../interfaces/InputSystem";
+import { LogicScript } from "../interfaces/LogicScript";
+import { Renderer } from "../interfaces/Renderer";
 
 export class Engine2d implements Engine {
   private gameObjects: Record<string, GameObject> = {};
