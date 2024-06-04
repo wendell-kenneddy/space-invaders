@@ -21,7 +21,7 @@ export class Projectile implements GameObject {
 
   update({
     collisionSystem,
-    requestGameObjectDestruction,
+    requestRenderableObjectDestruction,
     stores,
     requestStoresEdit,
   }: EngineState): void {
@@ -31,7 +31,7 @@ export class Projectile implements GameObject {
       const projectileIds: string[] = stores[key] ?? [];
       const filteredProjectileIds = projectileIds.filter((id) => id != this.id);
       requestStoresEdit(key, filteredProjectileIds, false);
-      requestGameObjectDestruction(this.id);
+      requestRenderableObjectDestruction(this.id);
       return;
     }
 
