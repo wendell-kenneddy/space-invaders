@@ -11,7 +11,8 @@
   "devDependencies": {
     "@types/uuid": "^9.0.8",
     "typescript": "^5.2.2",
-    "vite": "^5.2.0"
+    "vite": "^5.2.0",
+    "vite-tsconfig-paths": "^4.3.2"
   },
   "dependencies": {
     "uuid": "^9.0.1"
