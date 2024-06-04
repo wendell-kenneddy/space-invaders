@@ -1,11 +1,11 @@
-import { Alien } from "./lib/game-objects/Alien";
-import { AlienBehaviorScript } from "./lib/scripts/AlienBehaviorScript";
-import { CollisionSystem2d } from "./lib/core/CollisionSystem2d";
-import { Engine2d } from "./lib/core/Engine2d";
-import { KeyboardInputSystem } from "./lib/core/KeyboardInputSystem";
-import { ProjectileFiringScript } from "./lib/scripts/ProjectileFiringScript";
-import { Renderer2d } from "./lib/core/Renderer2d";
-import { Spaceship } from "./lib/game-objects/Spaceship";
+import { Engine2d } from "@core/Engine2d";
+import { Renderer2d } from "@core/Renderer2d";
+import { CollisionSystem2d } from "@core/CollisionSystem2d";
+import { KeyboardInputSystem } from "@core/KeyboardInputSystem";
+import { Alien } from "@game-objects/Alien";
+import { Spaceship } from "@game-objects/Spaceship";
+import { AlienBehaviorScript } from "@scripts/AlienBehaviorScript";
+import { ProjectileFiringScript } from "@scripts/ProjectileFiringScript";
 
 import "./styles/style.css";
 
