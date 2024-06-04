@@ -1,5 +1,5 @@
-import { GameObject, GameObjectConfig, SpriteData } from "../interfaces/GameObject";
-import { Renderer } from "../interfaces/Renderer";
+import { GameObject, GameObjectConfig, SpriteData } from "@interfaces/GameObject";
+import { Renderer } from "@interfaces/Renderer";
 
 type RenderableRectData = Omit<
   GameObjectConfig,

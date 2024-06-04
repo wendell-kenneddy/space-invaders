@@ -1,4 +1,4 @@
-import { InputData, InputSystem, InputSystemState } from "../interfaces/InputSystem";
+import { InputData, InputSystem, InputSystemState } from "@interfaces/InputSystem";
 
 export class KeyboardInputSystem implements InputSystem {
   private isRunning: boolean = false;

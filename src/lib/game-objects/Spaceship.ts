@@ -1,6 +1,6 @@
 import { v4 } from "uuid";
-import { GameObject, GameObjectConfig } from "../interfaces/GameObject";
-import { EngineState } from "../interfaces/Engine";
+import { GameObject, GameObjectConfig } from "@interfaces/GameObject";
+import { EngineState } from "@interfaces/Engine";
 
 export interface SpaceshipConfig extends GameObjectConfig {}
 

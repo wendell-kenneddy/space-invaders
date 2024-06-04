@@ -1,8 +1,8 @@
 import { v4 } from "uuid";
-import { LogicScript, LogicScriptData } from "../interfaces/LogicScript";
-import { EngineState } from "../interfaces/Engine";
-import { Alien } from "../game-objects/Alien";
-import { Projectile } from "../game-objects/Projectile";
+import { LogicScript, LogicScriptData } from "@interfaces/LogicScript";
+import { EngineState } from "@interfaces/Engine";
+import { Alien } from "@game-objects/Alien";
+import { Projectile } from "@game-objects/Projectile";
 
 export class AlienBehaviorScript implements LogicScript {
   private readonly id = v4();
