@@ -1,11 +1,11 @@
-import { Alien } from "./lib/Alien";
-import { AlienBehaviorScript } from "./lib/AlienBehaviorScript";
-import { CollisionSystem2d } from "./lib/CollisionSystem2d";
-import { Engine2d } from "./lib/Engine2d";
-import { KeyboardInputSystem } from "./lib/KeyboardInputSystem";
-import { ProjectileFiringScript } from "./lib/ProjectileFiringScript";
-import { Renderer2d } from "./lib/Renderer2d";
-import { Spaceship } from "./lib/Spaceship";
+import { Alien } from "./lib/game-objects/Alien";
+import { AlienBehaviorScript } from "./lib/scripts/AlienBehaviorScript";
+import { CollisionSystem2d } from "./lib/core/CollisionSystem2d";
+import { Engine2d } from "./lib/core/Engine2d";
+import { KeyboardInputSystem } from "./lib/core/KeyboardInputSystem";
+import { ProjectileFiringScript } from "./lib/scripts/ProjectileFiringScript";
+import { Renderer2d } from "./lib/core/Renderer2d";
+import { Spaceship } from "./lib/game-objects/Spaceship";
 
 import "./styles/style.css";
 
@@ -100,7 +100,4 @@ spritesheet.addEventListener("load", () => {
   engine2d.addLogicScript(alienBehaviorScript);
   engine2d.addLogicScript(projectileFiringScript);
   engine2d.startGameLoop();
-  setTimeout(() => {
-    console.log(engine2d.getEngineState().stores);
-  }, 5000);
 });
