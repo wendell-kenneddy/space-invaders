@@ -18,7 +18,13 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
-    "strictPropertyInitialization": true
+    "strictPropertyInitialization": true,
+    "paths": {
+      "@game-objects/*": ["./src/lib/game-objects/*"],
+      "@scripts/*": ["./src/lib/scripts/*"],
+      "@interfaces/*": ["./src/lib/interfaces/*"],
+      "@core/*": ["./src/lib/core/*"]
+    }
   },
   "include": ["src"]
 }
