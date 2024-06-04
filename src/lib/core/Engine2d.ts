@@ -4,9 +4,12 @@ import { GameObject } from "@interfaces/GameObject";
 import { InputSystem } from "@interfaces/InputSystem";
 import { LogicScript } from "@interfaces/LogicScript";
 import { Renderer } from "@interfaces/Renderer";
+import { TextObject } from "@interfaces/TextObject";
+
+export type RenderableObject = GameObject | TextObject;
 
 export class Engine2d implements Engine {
-  private gameObjects: Record<string, GameObject> = {};
+  private renderableObjects: Record<string, any> = {};
   private logicScripts: Record<string, LogicScript> = {};
   private stores: Record<string, any> = {};
   private gameState: GameState = "not-running";
@@ -21,14 +24,15 @@ export class Engine2d implements Engine {
     const engineState = {
       stores: { ...this.stores },
       gameState: this.gameState,
-      gameObjects: { ...this.gameObjects },
+      renderableObjects: { ...this.renderableObjects },
       collisionSystem: this.collisionSystem,
       inputSystemState: this.inputSystem.getInputSystemState(),
       requestStoresEdit: (key: string, newValue: any, toDelete: boolean) =>
         this.requestStoresEdit(key, newValue, toDelete),
       requestGameStop: () => this.triggerGameStop(),
-      requestGameObjectAdd: (gameObject: GameObject) => this.addOneGameObject(gameObject),
-      requestGameObjectDestruction: (id: string) => this.destroyGameObject(id),
+      requestRenderableObjectAdd: (renderableObject: RenderableObject) =>
+        this.addOneRenderableObject(renderableObject),
+      requestRenderableObjectDestruction: (id: string) => this.destroyRenderableObject(id),
     } as const;
     return engineState;
   }
@@ -45,22 +49,22 @@ export class Engine2d implements Engine {
     this.inputSystem.stop();
   }
 
-  addOneGameObject(newGameObject: GameObject) {
-    const { id } = newGameObject.getData();
-    this.gameObjects[id] = newGameObject;
+  addOneRenderableObject(newRenderableObject: RenderableObject) {
+    const { id } = newRenderableObject.getData();
+    this.renderableObjects[id] = newRenderableObject;
   }
 
-  addManyGameObjects(newGameObjects: GameObject[]) {
-    for (let i = 0; i < newGameObjects.length; i++) {
-      const { id } = newGameObjects[i].getData();
-      this.gameObjects[id] = newGameObjects[i];
+  addManyRenderableObjects(newRenderableObjects: RenderableObject[]) {
+    for (let i = 0; i < newRenderableObjects.length; i++) {
+      const { id } = newRenderableObjects[i].getData();
+      this.renderableObjects[id] = newRenderableObjects[i];
     }
   }
 
-  destroyGameObject(id: string): void {
-    const { canBeDestroyed } = this.gameObjects[id].getData();
+  destroyRenderableObject(id: string): void {
+    const { canBeDestroyed } = this.renderableObjects[id].getData();
     if (!canBeDestroyed) throw new Error(`Game Object ${id} can't be destroyed.`);
-    delete this.gameObjects[id];
+    delete this.renderableObjects[id];
   }
 
   addLogicScript(script: LogicScript) {
@@ -88,8 +92,8 @@ export class Engine2d implements Engine {
     }
   }
 
-  private renderGameObjects() {
-    for (const [, object] of Object.entries(this.gameObjects)) {
+  private renderObjects() {
+    for (const [, object] of Object.entries(this.renderableObjects)) {
       object.update(this.getEngineState());
       this.renderer.render(object);
     }
@@ -104,7 +108,7 @@ export class Engine2d implements Engine {
 
     this.renderer.clearScreen();
     this.executeLogicScripts();
-    this.renderGameObjects();
+    this.renderObjects();
 
     window.requestAnimationFrame(() => this.runGameLoop());
   }
