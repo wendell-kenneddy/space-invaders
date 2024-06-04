@@ -4,19 +4,22 @@ import { EngineState } from "@interfaces/Engine";
 import { Projectile } from "@game-objects/Projectile";
 import { GameObjectConfig } from "@interfaces/GameObject";
 
-export class ProjectileFiringScript implements LogicScript {
+export class SpaceshipBehaviorScript implements LogicScript {
   private readonly id = v4();
   private hasBeenExecuted: boolean = false;
   private lastShotTimestamp: number | null = null;
-  // don't set this too low otherwise some weird shit might happen, keep it >300
-  private readonly fireIntervalInMilliseconds: number = 500;
   private currentEngineState: EngineState | null = null;
 
-  constructor(private readonly canBeDestroyed: boolean, private readonly spaceshipId: string) {}
+  constructor(
+    private readonly canBeDestroyed: boolean,
+    private readonly spaceshipId: string,
+    private readonly fireIntervalInMilliseconds: number
+  ) {}
 
   execute(engineState: EngineState): void {
     !this.hasBeenExecuted && (this.hasBeenExecuted = true);
     this.currentEngineState = engineState;
+    this.resolveEnemyProjectileHits();
 
     if (engineState.inputSystemState.inputData["x"]) {
       if (!this.lastShotTimestamp) {
@@ -37,19 +40,50 @@ export class ProjectileFiringScript implements LogicScript {
     };
   }
 
+  private resolveEnemyProjectileHits(): void {
+    if (!this.currentEngineState) return;
+    const {
+      stores,
+      renderableObjects,
+      collisionSystem,
+      requestRenderableObjectDestruction,
+      requestStoresEdit,
+      requestGameStop,
+    } = this.currentEngineState;
+    const enemyProjectileIds: string[] = stores["enemy-projectile-ids"] ?? [];
+
+    for (let i = 0; i < enemyProjectileIds.length; i++) {
+      const projectile = renderableObjects[enemyProjectileIds[i]];
+      if (!projectile) continue;
+      const isBeingHit = collisionSystem.checkOneAgainstOne(
+        renderableObjects[this.spaceshipId],
+        projectile,
+        "both"
+      );
+
+      if (isBeingHit) {
+        const hp = stores["spaceship-hp"] ?? 3;
+        if (hp - 1 == 0) return requestGameStop();
+
+        requestRenderableObjectDestruction(enemyProjectileIds[i]);
+        requestStoresEdit("spaceship-hp", hp - 1, false);
+      }
+    }
+  }
+
   private fireProjectile(): void {
-    const { requestGameObjectAdd, requestStoresEdit, stores } = this
+    const { requestRenderableObjectAdd, requestStoresEdit, stores } = this
       .currentEngineState as EngineState;
     const projectileIds: string[] = stores["ally-projectile-ids"] ?? [];
     const projectile = this.createNewProjectile();
 
-    requestGameObjectAdd(projectile);
-    this.lastShotTimestamp = performance.now();
+    requestRenderableObjectAdd(projectile);
     requestStoresEdit("ally-projectile-ids", [...projectileIds, projectile.getData().id], false);
+    this.lastShotTimestamp = performance.now();
   }
 
   private createNewProjectile(): Projectile {
-    const spaceshipData = this.currentEngineState?.gameObjects[
+    const spaceshipData = this.currentEngineState?.renderableObjects[
       this.spaceshipId
     ].getData() as GameObjectConfig;
     const width = 4;
