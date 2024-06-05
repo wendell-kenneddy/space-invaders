@@ -2,7 +2,7 @@ import { v4 } from "uuid";
 import { LogicScript, LogicScriptData } from "@interfaces/LogicScript";
 import { EngineState } from "@interfaces/Engine";
 import { Projectile } from "@game-objects/Projectile";
-import { GameObjectConfig } from "@interfaces/GameObject";
+import { GameObjectConfig } from "@interfaces/InteractableObject";
 
 export class SpaceshipBehaviorScript implements LogicScript {
   private readonly id = v4();
