@@ -1,8 +1,8 @@
 import { v4 } from "uuid";
 import { LogicScript, LogicScriptData } from "@interfaces/LogicScript";
 import { EngineState } from "@interfaces/Engine";
-import { Alien } from "@game-objects/Alien";
-import { Projectile } from "@game-objects/Projectile";
+import { Alien } from "../interactable-objects/Alien";
+import { Projectile } from "../interactable-objects/Projectile";
 
 export class AlienBehaviorScript implements LogicScript {
   private readonly id = v4();
@@ -20,11 +20,13 @@ export class AlienBehaviorScript implements LogicScript {
   execute(engineState: EngineState): void {
     !this.hasBeenExecuted && (this.hasBeenExecuted = true);
     this.currentEngineState = engineState;
+    let alienCount: number = 0;
 
     const { renderableObjects } = engineState;
 
     for (const gameObject of Object.values(renderableObjects)) {
       if (!(gameObject instanceof Alien)) continue;
+      alienCount++;
       const shouldFire = this.checkFiringChance();
       const now = performance.now();
 
@@ -42,9 +44,10 @@ export class AlienBehaviorScript implements LogicScript {
         shouldFire && this.fireProjectile(alienId);
         this.alienCooldowns[alienId] = 2;
         this.lastShotTimestamp = now;
-        return;
       }
     }
+
+    alienCount == 0 && engineState.requestGameStop();
   }
 
   getScriptData(): LogicScriptData {
