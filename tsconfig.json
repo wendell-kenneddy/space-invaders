@@ -20,7 +20,7 @@
     "noFallthroughCasesInSwitch": true,
     "strictPropertyInitialization": true,
     "paths": {
-      "@game-objects/*": ["./src/lib/game-objects/*"],
+      "@game-objects/*": ["./src/lib/interactable-objects/*"],
       "@scripts/*": ["./src/lib/scripts/*"],
       "@interfaces/*": ["./src/lib/interfaces/*"],
       "@core/*": ["./src/lib/core/*"]
