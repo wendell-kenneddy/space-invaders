@@ -22,7 +22,10 @@ export abstract class Engine {
   abstract addOneRenderableObject(newRenderableObject: any): void;
   abstract addManyRenderableObjects(newRenderableObjects: any[]): void;
   abstract destroyRenderableObject(id: string): void;
-  abstract addLogicScript(script: LogicScript): void;
-  abstract requestLogicScriptDestruction(id: any): void;
+  abstract addOneLogicScript(script: LogicScript): void;
+  abstract addManyLogicScripts(scripts: LogicScript[]): void;
+  abstract destroyLogicScript(id: any): void;
   abstract getEngineState(): EngineState;
+  abstract hardReset(): void;
+  abstract setOnGameEndFn: (callback: (finalEngineState: EngineState) => void | null) => void;
 }
