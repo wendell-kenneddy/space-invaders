@@ -1,21 +1,21 @@
 import { v4 } from "uuid";
-import { GameObject, GameObjectConfig } from "@interfaces/GameObject";
+import { InteractableObject, InteractableObjectConfig } from "@interfaces/InteractableObject";
 import { EngineState } from "@interfaces/Engine";
 
 export type AlienMotion = 1 | -1;
 
-export interface AlienConfig extends GameObjectConfig {
+export interface AlienConfig extends InteractableObjectConfig {
   pointsWorth: number;
   motion: AlienMotion;
 }
 
-export class Alien implements GameObject {
+export class Alien implements InteractableObject {
   private readonly id = v4();
   private readonly canBeDestroyed = true;
   private currentMotion: AlienMotion = 1;
 
   constructor(
-    private readonly config: Omit<GameObjectConfig, "id" | "canBeDestroyed">,
+    private readonly config: Omit<InteractableObjectConfig, "id" | "canBeDestroyed">,
     private readonly pointsWorth: number
   ) {
     config.velocityX < 0 && (this.currentMotion = -1);
