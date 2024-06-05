@@ -1,10 +1,11 @@
 import { CollisionSystem } from "@interfaces/CollisionSystem";
-import { Engine, GameState } from "@interfaces/Engine";
+import { Engine, EngineState, GameState } from "@interfaces/Engine";
 import { InteractableObject } from "@interfaces/InteractableObject";
 import { InputSystem } from "@interfaces/InputSystem";
 import { LogicScript } from "@interfaces/LogicScript";
 import { Renderer } from "@interfaces/Renderer";
 import { TextObject } from "@interfaces/TextObject";
+import { clearRecord } from "../utils/clearObject";
 
 export type RenderableObject = InteractableObject | TextObject;
 
@@ -13,6 +14,7 @@ export class Engine2d implements Engine {
   private logicScripts: Record<string, LogicScript> = {};
   private stores: Record<string, any> = {};
   private gameState: GameState = "not-running";
+  private onGameEndCallback: ((finalEngineState: EngineState) => void) | null = null;
 
   constructor(
     private readonly renderer: Renderer,
@@ -37,6 +39,17 @@ export class Engine2d implements Engine {
     return engineState;
   }
 
+  hardReset(): void {
+    clearRecord(this.renderableObjects);
+    clearRecord(this.logicScripts);
+    clearRecord(this.stores);
+    this.onGameEndCallback = null;
+  }
+
+  setOnGameEndFn(callback: (finalEngineState: EngineState) => void | null): void {
+    this.onGameEndCallback = callback;
+  }
+
   startGameLoop() {
     if (this.gameState == "running") return;
     this.gameState = "running";
@@ -47,6 +60,7 @@ export class Engine2d implements Engine {
   stopGameLoop() {
     this.gameState = "not-running";
     this.inputSystem.stop();
+    this.onGameEndCallback && this.onGameEndCallback(this.getEngineState());
   }
 
   addOneRenderableObject(newRenderableObject: RenderableObject) {
@@ -67,11 +81,18 @@ export class Engine2d implements Engine {
     delete this.renderableObjects[id];
   }
 
-  addLogicScript(script: LogicScript) {
+  addOneLogicScript(script: LogicScript) {
     this.logicScripts[script.getScriptData().id] = script;
   }
 
-  requestLogicScriptDestruction(id: string) {
+  addManyLogicScripts(scripts: LogicScript[]): void {
+    for (let i = 0; i < scripts.length; i++) {
+      const { id } = scripts[i].getScriptData();
+      this.logicScripts[id] = scripts[i];
+    }
+  }
+
+  destroyLogicScript(id: string) {
     const { canBeDestroyed } = this.logicScripts[id].getScriptData();
     if (!canBeDestroyed) throw new Error(`Logic Script ${id} can't be destroyed.`);
     delete this.logicScripts[id];
