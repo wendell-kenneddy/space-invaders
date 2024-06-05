@@ -1,6 +1,6 @@
-import { GameObject } from "./GameObject";
+import { RenderableObject } from "@core/Engine2d";
 
 export abstract class Renderer {
-  abstract render(gameObject: GameObject): void;
+  abstract render(renderableObject: RenderableObject): void;
   abstract clearScreen(): void;
 }
