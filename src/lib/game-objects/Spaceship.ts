@@ -1,14 +1,14 @@
 import { v4 } from "uuid";
-import { GameObject, GameObjectConfig } from "@interfaces/GameObject";
+import { InteractableObject, InteractableObjectConfig } from "@interfaces/InteractableObject";
 import { EngineState } from "@interfaces/Engine";
 
-export interface SpaceshipConfig extends GameObjectConfig {}
+export interface SpaceshipConfig extends InteractableObjectConfig {}
 
-export class Spaceship implements GameObject {
+export class Spaceship implements InteractableObject {
   private readonly id = v4();
   private readonly canBeDestroyed = true;
 
-  constructor(private readonly config: Omit<GameObjectConfig, "id" | "canBeDestroyed">) {}
+  constructor(private readonly config: Omit<InteractableObjectConfig, "id" | "canBeDestroyed">) {}
 
   getData(): SpaceshipConfig {
     return {
