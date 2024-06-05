@@ -10,7 +10,7 @@ export class AlienBehaviorScript implements LogicScript {
   private projectileIds: string[] = [];
   private currentEngineState: EngineState | null = null;
   private readonly baseFiringChance = 0.15;
-  private readonly maxFiringChance = 0.4;
+  private readonly maxFiringChance = 0.55;
   private firingInterval = 500;
   private lastShotTimestamp: number | null = null;
   private alienCooldowns: Record<string, number> = {};
