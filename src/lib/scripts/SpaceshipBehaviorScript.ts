@@ -1,8 +1,8 @@
 import { v4 } from "uuid";
 import { LogicScript, LogicScriptData } from "@interfaces/LogicScript";
 import { EngineState } from "@interfaces/Engine";
-import { Projectile } from "@game-objects/Projectile";
-import { GameObjectConfig } from "@interfaces/InteractableObject";
+import { Projectile } from "../interactable-objects/Projectile";
+import { InteractableObjectConfig } from "@interfaces/InteractableObject";
 
 export class SpaceshipBehaviorScript implements LogicScript {
   private readonly id = v4();
@@ -85,7 +85,7 @@ export class SpaceshipBehaviorScript implements LogicScript {
   private createNewProjectile(): Projectile {
     const spaceshipData = this.currentEngineState?.renderableObjects[
       this.spaceshipId
-    ].getData() as GameObjectConfig;
+    ].getData() as InteractableObjectConfig;
     const width = 4;
     const height = 4;
     const positionX = spaceshipData.positionX + spaceshipData.width / 2 - width / 2;
@@ -96,7 +96,7 @@ export class SpaceshipBehaviorScript implements LogicScript {
         height,
         spriteDataOrColor: "#fff",
         velocityX: 0,
-        velocityY: -5,
+        velocityY: -10,
         positionY,
         positionX,
       },
