@@ -8,7 +8,7 @@ export interface SpriteData {
   cropHeight: number;
 }
 
-export interface GameObjectConfig {
+export interface InteractableObjectConfig {
   canBeDestroyed: boolean;
   id: string;
   positionX: number;
@@ -20,7 +20,7 @@ export interface GameObjectConfig {
   spriteDataOrColor: string | SpriteData[];
 }
 
-export abstract class GameObject {
-  abstract getData(): GameObjectConfig;
+export abstract class InteractableObject {
+  abstract getData(): InteractableObjectConfig;
   abstract update(engineState: EngineState): void;
 }
