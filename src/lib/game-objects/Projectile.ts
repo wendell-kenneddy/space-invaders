@@ -1,17 +1,17 @@
 import { v4 } from "uuid";
-import { GameObject, GameObjectConfig } from "@interfaces/GameObject";
+import { InteractableObject, InteractableObjectConfig } from "@interfaces/InteractableObject";
 import { EngineState } from "@interfaces/Engine";
 
-export class Projectile implements GameObject {
+export class Projectile implements InteractableObject {
   private readonly id = v4();
 
   constructor(
-    private readonly config: Omit<GameObjectConfig, "id" | "canBeDestroyed">,
+    private readonly config: Omit<InteractableObjectConfig, "id" | "canBeDestroyed">,
     private readonly canBeDestroyed: boolean,
     private readonly origin: "ally" | "enemy"
   ) {}
 
-  getData(): GameObjectConfig {
+  getData(): InteractableObjectConfig {
     return {
       id: this.id,
       canBeDestroyed: this.canBeDestroyed,
