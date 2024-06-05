@@ -1,10 +1,14 @@
 import { CollisionAxis, CollisionSystem, ScreenBoundaries } from "@interfaces/CollisionSystem";
-import { GameObject, GameObjectConfig } from "@interfaces/GameObject";
+import { InteractableObject, InteractableObjectConfig } from "@interfaces/InteractableObject";
 
 export class CollisionSystem2d implements CollisionSystem {
   constructor(private readonly boundaries: ScreenBoundaries) {}
 
-  checkOneAgainstOne(collider1: GameObject, collider2: GameObject, axis: CollisionAxis) {
+  checkOneAgainstOne(
+    collider1: InteractableObject,
+    collider2: InteractableObject,
+    axis: CollisionAxis
+  ) {
     const collider1Data = collider1.getData();
     const collider2Data = collider2.getData();
 
@@ -18,8 +22,9 @@ export class CollisionSystem2d implements CollisionSystem {
     );
   }
 
-  checkIfIsOutOfBounds(gameObject: GameObject, axis: CollisionAxis) {
-    const { width, height, positionX, positionY, velocityX, velocityY } = gameObject.getData();
+  checkIfIsOutOfBounds(interactableObject: InteractableObject, axis: CollisionAxis) {
+    const { width, height, positionX, positionY, velocityX, velocityY } =
+      interactableObject.getData();
     const { screenStartX, screenEndX, screenStartY, screenEndY } = this.boundaries;
 
     if (axis == "horizontal" && positionX - Math.abs(velocityX) <= screenStartX) return "left";
@@ -30,8 +35,8 @@ export class CollisionSystem2d implements CollisionSystem {
   }
 
   private checkOneToOneHorizontalCollision(
-    collider1Data: GameObjectConfig,
-    collider2Data: GameObjectConfig
+    collider1Data: InteractableObjectConfig,
+    collider2Data: InteractableObjectConfig
   ) {
     if (
       (collider1Data.positionX <= collider2Data.positionX &&
@@ -45,8 +50,8 @@ export class CollisionSystem2d implements CollisionSystem {
   }
 
   private checkOneToOneVerticalCollision(
-    collider1Data: GameObjectConfig,
-    collider2Data: GameObjectConfig
+    collider1Data: InteractableObjectConfig,
+    collider2Data: InteractableObjectConfig
   ) {
     if (
       (collider1Data.positionY <= collider2Data.positionY &&
