@@ -1,11 +1,12 @@
 import { InputData, InputSystem, InputSystemState } from "@interfaces/InputSystem";
+import { clearRecord } from "../utils/clearObject";
 
 export class KeyboardInputSystem implements InputSystem {
   private isRunning: boolean = false;
   private inputData: InputData = {};
 
   start(): void {
-    this.inputData = {};
+    clearRecord(this.inputData);
     this.isRunning = true;
     this.manageEventListeners("add");
   }
