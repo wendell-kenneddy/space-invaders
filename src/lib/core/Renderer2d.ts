@@ -1,15 +1,19 @@
-import { GameObject, GameObjectConfig, SpriteData } from "@interfaces/GameObject";
+import {
+  InteractableObject,
+  InteractableObjectConfig,
+  SpriteData,
+} from "@interfaces/InteractableObject";
 import { Renderer } from "@interfaces/Renderer";
 import { TextObjectConfig } from "@interfaces/TextObject";
 import { RenderableObject } from "./Engine2d";
 
 type RenderableRectData = Omit<
-  GameObjectConfig,
+  InteractableObjectConfig,
   "velocityX" | "velocityY" | "spriteDataOrColor"
 > & { color: string };
 
 type RenderableSpriteData = Omit<
-  GameObjectConfig,
+  InteractableObjectConfig,
   "velocityX" | "velocityY" | "spriteDataOrColor"
 > &
   SpriteData;
@@ -25,8 +29,8 @@ export class Renderer2d implements Renderer {
   ) {}
 
   render(renderableObject: RenderableObject) {
-    if ((renderableObject as GameObject).getData().spriteDataOrColor) {
-      this.renderGameObject(renderableObject as GameObject);
+    if ((renderableObject as InteractableObject).getData().spriteDataOrColor) {
+      this.renderGameObject(renderableObject as InteractableObject);
       return;
     }
     this.renderText(renderableObject.getData() as TextObjectConfig);
@@ -38,9 +42,9 @@ export class Renderer2d implements Renderer {
     this.canvasContext2d.clearRect(0, 0, width, height);
   }
 
-  private renderGameObject(gameObject: GameObject) {
+  private renderGameObject(interactableObject: InteractableObject) {
     const { width, height, positionX, positionY, spriteDataOrColor, canBeDestroyed, id } =
-      gameObject.getData();
+      interactableObject.getData();
     const base = { width, height, positionX, positionY, canBeDestroyed, id };
 
     this.changeFrameData();
