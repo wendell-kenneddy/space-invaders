@@ -38,7 +38,7 @@ export class Alien implements InteractableObject {
     if (completionPercentage > 0) {
       // since the game ends when completionPercentage reaches 100% (55/55 aliens dead), 1/55
       // is added to ensure velocity is at max when only 1 alien is left
-      velocityMultiplier += 1 * (completionPercentage + 1 / 55);
+      velocityMultiplier += 1.8 * (completionPercentage + 1 / 55);
     }
 
     const motion = stores["motion"] ?? this.currentMotion;
