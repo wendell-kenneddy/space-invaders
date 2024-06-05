@@ -1,12 +1,12 @@
 import { CollisionSystem } from "@interfaces/CollisionSystem";
 import { Engine, GameState } from "@interfaces/Engine";
-import { GameObject } from "@interfaces/GameObject";
+import { InteractableObject } from "@interfaces/InteractableObject";
 import { InputSystem } from "@interfaces/InputSystem";
 import { LogicScript } from "@interfaces/LogicScript";
 import { Renderer } from "@interfaces/Renderer";
 import { TextObject } from "@interfaces/TextObject";
 
-export type RenderableObject = GameObject | TextObject;
+export type RenderableObject = InteractableObject | TextObject;
 
 export class Engine2d implements Engine {
   private renderableObjects: Record<string, any> = {};
